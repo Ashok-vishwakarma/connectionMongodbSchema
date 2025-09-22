@@ -1,0 +1,37 @@
+// const errorAsyncHandler = require('express-async-handler');
+// var errorHandler = require('express-error-handler'),
+//     handler = errorHandler({
+//         handlers: {
+//             '404': function err404() {
+//                 // do some custom thing here...
+//             }
+//         }
+//     });
+
+const cookieParser = require("cookie-parser");
+
+
+//@Get
+
+
+const getDashboardData = (req, res, next) => {
+    // const data = req.body
+    res.cookie('name', 'kjagsicbauigas')
+    res.send("Data received successfully GET DATA");
+}
+
+
+const dashboard = (req, res, next) => {
+    const payloadData = req.body
+    console.log(req.cookies, "cokiesssssssss")
+    // console.log(payloadData)
+    payloadData.forEach((res, index) => {
+        console.log(res, index)
+    });
+    res.send("Data received successfully");
+}
+
+
+
+
+module.exports = { dashboard, getDashboardData }
