@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const URLs = "mongodb://localhost:27017/testdb"
+const URLs = "mongodb://localhost:27017/datatata"
+// const URLs = "mongodb://localhost:27017/"
 mongoose.connect(URLs).then(() => console.log('Connected to MongoDB...'))
     .catch(err => console.log('Could not connect to MongoDB...', err));
 
@@ -20,7 +21,7 @@ const userLoginSchema = mongoose.Schema({
 
 }, {
     timestamps: true,
-    collection: 'userLogin'  // <-- Set custom collection name
+    // collection: 'userLogin'  // <-- Set custom collection name
 })
 
-module.exports = mongoose.Model("userLoginSchema", userLoginSchema)
+module.exports = mongoose.model("userLoginSchema", userLoginSchema)

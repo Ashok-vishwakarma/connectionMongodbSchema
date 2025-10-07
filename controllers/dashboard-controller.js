@@ -21,8 +21,8 @@ const getDashboardData = (req, res, next) => {
 }
 
 
-const dashboard = (req, res, next) => {
-    const payloadData = req.body
+const dashboard = async (req, res, next) => {
+    const payloadData = await req.body
     console.log(req.cookies, "cokiesssssssss")
     // console.log(payloadData)
     payloadData.forEach((res, index) => {
