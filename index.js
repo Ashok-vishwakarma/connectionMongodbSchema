@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 // const cors = require(cors);
 const { dbConnection } = require('./config/seqlizeConnection')
 const User = require('./models/sqlUserModel')
-const port = process.env.PORT || 3500;
+const port = process.env.PORT || 2525;
 
 // disk design kar de
 const storage = multer.diskStorage({
@@ -19,13 +19,14 @@ const storage = multer.diskStorage({
     }
 });
 
-User.sync()
+User.sync({ force: false })
 
 dotenv.config()
 // accesss karo storage in multer
 const upload = multer({ storage: storage });
 
 const cookieParse = require('cookie-parser');
+const { or } = require('sequelize');
 
 
 // Without this, req.body would be undefined when you send JSON from client.
@@ -41,7 +42,6 @@ app.use(cookieParse())
 app.set('view engine', 'ejs')
 
 
-
 app.get('/staticPage', (req, res) => {
     res.render("index")
 })
@@ -55,7 +55,8 @@ app.post("/upload", upload.single("avatar"), (req, res) => {
 
 app.use('/api/dashbaord', require('./routing/dashbaordRoute'));
 app.use('/api', require('./routing/loginRoute'))
-
+// sql model code how i can insert value from in sqlDB
+app.use('/sqlModelCheck', require('./routing/sqlQuerytest'))
 app.post('/createuser', async function (req, res) {
     let user = await userLoginSchema.create({
         power_type: "kjasbck",
@@ -75,6 +76,6 @@ app.post('/createuser', async function (req, res) {
 
 
 app.listen(port, () => {
-    console.log('server is started')
+    console.log('server is started', `${port}`)
     dbConnection()
 })
