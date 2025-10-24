@@ -45,11 +45,7 @@ const getByIdUserData = async (req, res) => {
 
     const id = req.params.id
     const userById = await User.findAll({
-        where: {
-            [Op.eq]: {
-                [Op.eq]: id,
-            },
-        },
+        where: { id: id },
     });
 
     console.log(userById + "getttttByyy ID")
@@ -60,9 +56,25 @@ const getByIdUserData = async (req, res) => {
 }
 
 
-const updateUserByIdUserData = (req, res) => { }
+const updateUserByIdUserData = async (req, res) => {
+    const userId = req.params.id
+    // const userUpdated = User.update({"firstName":"Sham"} , {where : {id:}})
+    const userUpdated = await User.update(req.body, { where: { id: userId } })
 
-const deleteUserByIdUserData = (req, res) => { }
+    res.status(201).send(`id:- ${userId} is updated successfully`)
+
+}
+
+const deleteUserByIdUserData = async (req, res) => {
+    const userId = req.params.id
+    const deletedCount = await User.destroy({
+        where: { id: userId }, // or just { id }
+    });
+
+    if (deletedCount) {
+        res.status(201).send({ message: `${userId} UserId Is Deleted` })
+    }
+}
 
 
 module.exports = { insertOperation, allUserRecord, getByIdUserData, updateUserByIdUserData, deleteUserByIdUserData }

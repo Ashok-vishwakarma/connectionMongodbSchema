@@ -31,7 +31,17 @@ const dashboard = async (req, res, next) => {
     res.send("Data received successfully");
 }
 
+const getAdminDashboard = (req, res) => {
+    res.send("admin Data")
+}
+
+const deleteUser = (req , res) => {
+    const userId= req.params.id;
+    //your query
+
+    res.status(200).send('user deleted sucessfully' + userId)
+}
 
 
 
-module.exports = { dashboard, getDashboardData }
+module.exports = { dashboard, getDashboardData, getAdminDashboard, deleteUser }

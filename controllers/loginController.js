@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const { userIdCreation } = require('../models/userIdCreation')
+const { userToken } = require('../models/userToken')
 
 const salt = "qwertyuiopasdfghjkl";
 const saltJwt = "qkbsdcswertyuiopasdfghjkl";
@@ -9,22 +11,26 @@ let arrPassword = [{
     email: "ashok@gmail.com"
 }]
 
-const login = (req, res) => {
+const login = async (req, res) => {
     try {
         const { username, password, email } = req.body
         if (username && password && email) {
 
             //  const userHashPass = arrPassword.find(u => u.username === username);
+            // statis 
+            // const userHashPass = arrPassword.map((res) => {
+            //     if (username == res.username) {
+            //         return res
+            //     }
+            // })
 
-            const userHashPass = arrPassword.map((res) => {
-                if (username == res.username) {
-                    return res
-                }
-            })
+
+            // DYNAMIC  FROM DB CALL
+            const token = await userIdCreation.findOne({ where: { email: email } })
 
             //DECRYP THE PASSWORD AND SAVE IN DB
-            bcrypt.compare(password, userHashPass[0].password, function (err, result) {
-                result == true ? jwtCreation(email , res) : res.send("User is not Authenticate")
+            bcrypt.compare(password, token.password, function (err, result) {
+                result == true ? jwtCreation(email, res) : res.send("User is not Authenticate")
             });
 
         } else {
@@ -35,20 +41,23 @@ const login = (req, res) => {
     }
 }
 
-function jwtCreation(emailId , response) {
+async function jwtCreation(emailId, response) {
 
     const jwtToken = jwt.sign({
         data: emailId
-    }, saltJwt, { expiresIn: '1h' });
+    }, saltJwt, { expiresIn: '2m' });
+
+
+    await userToken.create({ userId: emailId, tokenNumber: jwtToken })
+
 
     response.send({
         "token": jwtToken,
         "message": "Userlogin successfully"
-    })
+    },)
 }
 
 const signUp = (req, res) => {
-
     try {
         const { username, password, email } = req.body
         if (username && password && email) {
@@ -56,9 +65,10 @@ const signUp = (req, res) => {
                 bcrypt.hash(password, salt, function (err, hash) {
                     console.log({ "username": username, password: hash });
                     arrPassword.push({ "username": username, password: hash })
+                    const userCreat = userIdCreation.create({ username, password: hash, email })
+                    res.send('signUp successfullly', userCreat.username)
                 });
             });
-            res.send('signUp successfullly')
         } else {
             return res.status(403).send("all feilds required");
         }
